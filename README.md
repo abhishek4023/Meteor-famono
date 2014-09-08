@@ -1,3 +1,8 @@
+# WAITING FOR THE METEOR PACKAGE SYSTEM TO SETTLE
+I'm not going to respond to any issues on this package until the Meteor Package System settles. Use this package at your own risk, it may or may not be broken. Please dont email issues..
+
+Kind regards RaiX
+
 FAMONO
 ======
 
