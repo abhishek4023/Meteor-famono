@@ -2031,11 +2031,17 @@ var convertGlobalDependenciesIntoString = function() {
   // libraryGlobalRoot are the ones we work on, we
   // return a string
   // We simply stringify the library
-  var result = comleteTextify(libraryGlobalRoot, 0, false);
+  var result = '// Define the globals\n';
+  result += comleteTextify(libraryGlobalRoot, 0, false);
+  result += '\n// Make sure famous code is initialized when document.body exists\n';
+  result += 'Meteor.startup(function() {';
+
   for (var i = 0; i < libraryGlobalsToLoad.length; i++) {
     var lib = libraryGlobalsToLoad[i];
-    result += '\n' + lib.globalName + ' = Famono.require(\'' + lib.requireName + '\');';
+    result += '\n\t' + lib.globalName + ' = Famono.require(\'' + lib.requireName + '\');';
   }
+
+  result += '\n});';
   return result;
 };
 
