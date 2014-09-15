@@ -1,6 +1,6 @@
 Package.describe({
   name: "raix:famono",
-  version: '0.8.0',
+  version: '0.8.1',
   summary: 'Library bundler supports use of libraries like Famo.us, via git/bower and requireJS/commonJS/AMD/UMD'
 });
 
@@ -23,13 +23,12 @@ Npm.depends({
 });
 
 Package.on_use(function(api) {
-  'use strict';
 
-  api.use('webapp@1.0.0', 'server');  // Used for serving files
-  api.use('reload@1.0.0', 'client'); // Not sure if we are using this?
-  api.use('routepolicy@1.0.0', 'server'); // Not sure if this is used...
+  if (api.versionsFrom) api.versionsFrom('METEOR@0.9.1');
 
-  //api.versionsFrom && api.versionsFrom('METEOR-CORE@0.9.0-preview4');
+  api.use('webapp', 'server');  // Used for serving files
+  api.use('reload', 'client'); // Not sure if we are using this?
+  api.use('routepolicy', 'server'); // Not sure if this is used...
 
   api.add_files([
     // Just noop server-side api warning if used on server
