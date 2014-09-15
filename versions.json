@@ -2,7 +2,7 @@
   "dependencies": [
     [
       "application-configuration",
-      "1.0.0"
+      "1.0.1"
     ],
     [
       "binary-heap",
@@ -10,7 +10,7 @@
     ],
     [
       "blaze",
-      "1.0.4-rc0"
+      "2.0.0"
     ],
     [
       "blaze-tools",
@@ -25,12 +25,16 @@
       "1.0.0"
     ],
     [
+      "ddp",
+      "1.0.8"
+    ],
+    [
       "ejson",
-      "1.0.0"
+      "1.0.1"
     ],
     [
       "follower-livedata",
-      "1.0.0"
+      "1.0.1"
     ],
     [
       "geojson-utils",
@@ -57,32 +61,28 @@
       "1.0.0"
     ],
     [
-      "livedata",
-      "1.0.8-rc0"
-    ],
-    [
       "logging",
-      "1.0.0"
-    ],
-    [
-      "meteor",
       "1.0.2"
     ],
     [
+      "meteor",
+      "1.0.3"
+    ],
+    [
       "minifiers",
-      "1.0.0"
+      "1.0.2"
     ],
     [
       "minimongo",
-      "1.0.2-rc0"
+      "1.0.2"
     ],
     [
-      "mongo-livedata",
-      "1.0.4-rc0"
+      "mongo",
+      "1.0.4"
     ],
     [
       "observe-sequence",
-      "1.0.2-rc0"
+      "1.0.2"
     ],
     [
       "ordered-dict",
@@ -94,11 +94,11 @@
     ],
     [
       "reactive-var",
-      "1.0.1-rc0"
+      "1.0.1"
     ],
     [
       "reload",
-      "1.0.0"
+      "1.0.1"
     ],
     [
       "retry",
@@ -110,23 +110,19 @@
     ],
     [
       "spacebars",
-      "1.0.0"
+      "1.0.1"
     ],
     [
       "spacebars-compiler",
-      "1.0.0"
+      "1.0.2"
     ],
     [
       "templating",
-      "1.0.0"
+      "1.0.5"
     ],
     [
       "tracker",
-      "1.0.2-rc0"
-    ],
-    [
-      "ui",
-      "1.0.1-rc0"
+      "1.0.2"
     ],
     [
       "underscore",
@@ -134,7 +130,7 @@
     ],
     [
       "webapp",
-      "1.0.2"
+      "1.0.3"
     ]
   ],
   "pluginDependencies": [
@@ -143,6 +139,6 @@
       {}
     ]
   ],
-  "toolVersion": "meteor-tool@1.0.26",
+  "toolVersion": "meteor-tool@1.0.28",
   "format": "1.0"
 }
