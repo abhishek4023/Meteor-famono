@@ -1525,6 +1525,11 @@ var eachPackage = function(appDir, callback) {
             });
           }
         } else {
+          // XXX: Should we check $PACKAGE_DIRS - I guess we would have to scan
+          // this folder and monitor it for this to make sense - a bit more
+          // complicated? how does meteor handle this folder?
+          // var devPackageFolder = process.env['PACKAGE_DIRS'];
+
           // I think this is impossible, but just in case... :)
           console.warn(yellow, 'Famono:', normal,
             'Warning, could not find location of package "' + line + '"');
