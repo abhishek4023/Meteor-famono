@@ -1,10 +1,5 @@
-# WAITING FOR THE METEOR PACKAGE SYSTEM TO SETTLE
-I'm not going to respond to any issues on this package until the Meteor Package System settles. Use this package at your own risk, it may or may not be broken. Please dont email issues..
-
-Kind regards RaiX
-
-FAMONO
-======
+raix:famono
+===========
 
 ### What is it?
 
@@ -17,15 +12,15 @@ __You get:__ [famous](https://github.com/Famous/famous) libraries pr. default al
 It was built to support Famo.us in Meteor (examples below)
 But target has become finegrained reuse of javascript code in general from the web.
 
-If you want a "pure" app without the meteor libraries just remove `standard-app-packages`.
+If you want a "pure" app without the meteor libraries just remove `meteor-platform` package.
 
 ### Installing it
 
 __Meteor package__
 ```bash
-$ mrt add famono
+$ meteor add raix:famono
 ```
-*Requires: `Meteor`, `Meteorite` and of course `git`*
+*Requires: `Meteor-0.9.0` and of course `git`*
 
 ### Use it
 
@@ -35,7 +30,8 @@ When you install famono it will add a `lib/smart.require` file to your main app 
 ```js
 {
   "famous": {
-    "git": "https://github.com/Famous/famous.git"
+    "git": "https://github.com/Famous/famous.git",
+    "root": "src" // From version 3 of famous
   },
   "famous.polyfills": {
     "git": "https://github.com/Famous/polyfills.git"
@@ -79,7 +75,7 @@ if (Meteor.isClient) {
         this.show(surfaces[next]);
     }.bind(renderController));
 
-    mainContext.add(new famous.core.Modifier({origin: [.5, .5]})).add(renderController);
+    mainContext.add(new famous.core.Modifier({align: [.5, .5], origin: [.5, .5]})).add(renderController);
 
   });
 
