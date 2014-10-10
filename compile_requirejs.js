@@ -2171,7 +2171,8 @@ Plugin.registerSourceHandler("require", function(compileStep) {
   // We only care about generating client-side code...
   // XXX: at the moment, but it would be nice if we could get arcs etc. maybe
   // a "cordova" set so we could adapt the library code depending on the target
-  if (compileStep.arch !== 'browser' && compileStep.arch !== 'web.browser')
+  console.log(compileStep.arch);
+  if (compileStep.arch !== 'browser' && compileStep.arch !== 'web.browser' && compileStep.arch !== 'web.cordova')
     return;
 
   console.log('\nEnsure dependencies...');

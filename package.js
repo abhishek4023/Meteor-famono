@@ -1,6 +1,6 @@
 Package.describe({
   name: "raix:famono",
-  version: '0.9.0',
+  version: '0.9.1',
   summary: 'Library bundler supports use of libraries like Famo.us, via git/bower and requireJS/commonJS/AMD/UMD'
 });
 
