@@ -1,6 +1,6 @@
 Package.describe({
   name: "raix:famono",
-  version: '0.9.1',
+  version: '0.9.3',
   summary: 'Library bundler supports use of libraries like Famo.us, via git/bower and requireJS/commonJS/AMD/UMD'
 });
 
@@ -20,7 +20,7 @@ Package.on_use(function(api) {
   api.use('reload', 'client'); // Not sure if we are using this?
   api.use('routepolicy', 'server'); // Not sure if this is used...
 
-  api.use('raix:famono-binary-deps@1.0.0', 'server'); // Binary deps
+  api.use('raix:famono-binary-deps@1.0.1', 'server'); // Binary deps
 
   api.add_files([
     // Just noop server-side api warning if used on server
