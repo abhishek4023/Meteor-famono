@@ -1471,6 +1471,72 @@ var ensureDependencies = function(compileStep) {
 
 };
 
+var listDevPackages = function() {
+  var devPackageFolder = process.env['PACKAGE_DIRS'];
+
+  var lookup = {};
+  if (devPackageFolder) {
+    // 1. scan folders in devPackageFolder
+    var folderList = fs.readdirSync(devPackageFolder);
+
+    for (var i = 0; i < folderList.length; i++) {
+      // Filename
+      var fileName = folderList[i];
+      // path name
+      var filePath = path.join(devPackageFolder, fileName);
+      // Get the stats
+      var stats = fs.statSync(filePath);
+      // Check if we got a folder
+      if (stats.isDirectory()) {
+
+        var packageJsPath = path.join(filePath, 'package.js');
+
+        // 2. if no name set name to folder name
+        var name = fileName;
+        
+        if (fs.existsSync(packageJsPath)) {
+          // 3. load package.js and check Package.description({ name });
+          var packageJS = fs.readFileSync(packageJsPath, 'utf8');
+
+          // XXX: not the best parser but it have to do for now...
+          var startDescription = packageJS.indexOf('Package.describe');
+          packageJS = packageJS.substring(startDescription);
+          var start = packageJS.indexOf('{');
+          var stop = packageJS.indexOf('}');
+
+          var describeString = packageJS.substring(start+1, stop);
+
+          describeString = describeString.replace(/ /g, '');
+          describeString = describeString.replace(/"|'/g, '');
+
+          describeString = describeString.replace(/\n/g, '');
+
+          describeList = describeString.split(',');
+
+          for (var a = 0; a < describeList.length; a++) {
+            var item = describeList[a];
+
+            if (/^name/.test(item)) {
+              name = item.substring(5);
+            }
+          }
+
+          // 4. set lookup name to complete folder name
+          lookup[name] = filePath;
+
+        }
+
+
+      }
+    }
+
+
+  }
+
+  // Return lookup
+  return lookup;
+};
+
 // Iterate through the packages used by the application
 // that are defined in the .meteor/packages file.
 // Essentially project.getPackages https://github.com/meteor/meteor/blob/64e02f2f56d1588d9daad09634d579eb61bf91ab/tools/project.js#L41
@@ -1478,6 +1544,9 @@ var eachPackage = function(appDir, callback) {
   var ret = [];
 
   var file = path.join(appDir, '.meteor', 'packages');
+
+  // Get developer packages
+  var devPackages = listDevPackages();
 
   var versions = {};
   var versionsFile = path.join(appDir, '.meteor', 'versions');
@@ -1525,14 +1594,22 @@ var eachPackage = function(appDir, callback) {
             });
           }
         } else {
-          // XXX: Should we check $PACKAGE_DIRS - I guess we would have to scan
+          // Check $PACKAGE_DIRS - I guess we would have to scan
           // this folder and monitor it for this to make sense - a bit more
-          // complicated? how does meteor handle this folder?
-          // var devPackageFolder = process.env['PACKAGE_DIRS'];
+          // complicated
+          if (devPackages[line]) {
+            if (callback)
+              callback({
+                name: line,
+                folder: devPackages[line]
+              });
+          } else {
 
-          // I think this is impossible, but just in case... :)
-          console.warn(yellow, 'Famono:', normal,
-            'Warning, could not find location of package "' + line + '"');
+            // I think this is impossible, but just in case... :)
+            console.warn(yellow, 'Famono:', normal,
+              'Warning, could not find location of package "' + line + '"');
+
+          }
         }       
       }
     }
