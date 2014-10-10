@@ -137,7 +137,8 @@ var installationCheck = function() {
 
     var defaultDeps = JSON.stringify({
       'famous': {
-        git: 'https://github.com/Famous/famous.git'
+        git: 'https://github.com/Famous/famous.git',
+        root: 'src'
       },
       // 'famous': {
       //   git: 'https://github.com/raix/famous.git',
