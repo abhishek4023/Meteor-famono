@@ -101,6 +101,10 @@
       "1.0.0"
     ],
     [
+      "raix:famono-binary-deps",
+      "1.0.0"
+    ],
+    [
       "random",
       "1.0.0"
     ],
@@ -156,7 +160,11 @@
   "pluginDependencies": [
     [
       "compileRequirejs",
-      {}
+      {
+        "underscore": "1.0.0",
+        "raix:famono-binary-deps": "1.0.0",
+        "meteor": "1.1.1"
+      }
     ]
   ],
   "toolVersion": "meteor-tool@1.0.33",
