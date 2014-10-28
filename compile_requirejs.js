@@ -32,7 +32,7 @@ var yellow = '\u001B[0;33m';
 
 // Changing this will force a rerun of deps - this makes it easier for the users
 // to migrate into newer versions of Famono
-var version = '0.1.10';
+var version = '0.1.11';
 // This object will contain the library registry when compiling
 var libraryRegistry = {};
 // This array will contain library globals, at the moment we got stuff like
@@ -875,16 +875,26 @@ var updateDependencies = function(name, rootPath) {
     // Make sure we got something and its not index.js already...
     if (config && config.main && config.main !== 'index.js') {
       // So the main could be string or array - we will convert to array first
-      var mainFiles = (config.main === ''+config.main)? [config.main]: config.main;
+      // XXX: For now we disable the bower main...
+      var mainFiles = []; //(config.main === ''+config.main)? [config.main]: config.main;
       if (mainFiles.length) {
 
         var indexDepsLookup = {};
         for (var a = 0; a < mainFiles.length; a++) {
+
+          // XXX: we have to test if a folder is passed and we have to remove the
+          // root part of the reference if root is set... Issue #78
+          // TODO: Fix this or make famono smarter about automatic folder index
+          // generation...
+
+          // We have to check if its a folder if so get all deps recursive...?
+
           // Remove any css or js ext, and any ./ at the beginning - its assumed
           var indexDepName = name + '/' + mainFiles[a].replace(/.js|.css/g, '').replace(/^.\//, '');
           if (typeof indexDepsLookup[indexDepName] === 'undefined') {
             indexDepsLookup[indexDepName] = true;
           }
+
         }
 
 
