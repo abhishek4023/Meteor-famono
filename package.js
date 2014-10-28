@@ -1,6 +1,6 @@
 Package.describe({
   name: "raix:famono",
-  version: '0.9.12',
+  version: '0.9.13',
   summary: 'Library bundler supports use of libraries like Famous, via git/bower and requireJS/commonJS/AMD/UMD'
 });
 
@@ -15,6 +15,7 @@ Package._transitional_registerBuildPlugin({
   npmDependencies: {
     'sync-exec': '0.3.2', // exec sync - we could also just run in a fiber?
     'famono': '0.0.9', // Our way of to require famono_lib.js
+    // My sweet non binary chokidar :)
     'chokidar': 'https://github.com/raix/chokidar/tarball/53bdc584bcabb8a132be7292026c95888554aca4' // For watching local files.. 0.8.2
   }  
 });
