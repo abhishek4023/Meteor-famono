@@ -1645,7 +1645,7 @@ var readPackagejs = function(packagejsSource) {
       // Parse the package names into a checkable string ex. /session/ejson/
       names = '/' + ((names === '' + names) ? names : names.join('/')) + '/';
 
-      if (/\/famono\/|\/famono@[\d|\.|-]+\//.test(names)) {
+      if (/\/raix:famono@[\d|\.|\-|\+|_|a-z]+\//.test(names)) {
         ret.useFamono = true;
       }
     };
