@@ -2542,7 +2542,8 @@ Plugin.registerSourceHandler("require", function(compileStep) {
     path: 'lib/global-definitions.js',
     sourcePath: 'lib/global-definitions.js',
     // We add the textified global dependency declaration
-    data: convertGlobalDependenciesIntoString(),
+    // XXX: Added something for gadicc to puzzle with... :)
+    data: convertGlobalDependenciesIntoString() + '\nwindow.famous=famous;\nconsole.log("Famous defined");',
     bare: true
   });
 
