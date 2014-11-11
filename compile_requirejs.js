@@ -32,7 +32,7 @@ var yellow = '\u001B[0;33m';
 
 // Changing this will force a rerun of deps - this makes it easier for the users
 // to migrate into newer versions of Famono
-var version = '0.1.11';
+var version = '0.1.12';
 // This object will contain the library registry when compiling
 var libraryRegistry = {};
 // This array will contain library globals, at the moment we got stuff like
@@ -782,7 +782,7 @@ var parseCode = function(currentDep, code, inLibraryCode) {
   var depsString = JSON.stringify(result.deps);
 
   // If no define is found then wrap the code in a define for consistency
-  if (!foundDefine) result.code = 'define(function() {\n' + result.code + '\n});';
+  if (!foundDefine) result.code = 'define(function(require, exports, module) {\n' + result.code + '\n});';
   
   // Wrap in Famono scope Credit goes to @speigg for this idea
   result.code = defineStatement + depsString + ', function(require, define) {\n' + result.code + '\n});';
