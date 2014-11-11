@@ -1875,6 +1875,16 @@ var libraryGlobalRoot = {};
 var libraryGlobalsToLoad = [];
 
 var addLibraryGlobalDependency = function(libraryName, depRequireName) {
+  // So if one library requires another we have to test this
+  var isUsingInternalLibrary = new RegExp('^' + libraryName + '/');
+  // If using an external library we fix the library name setting it to the
+  // external library name
+  if (!isUsingInternalLibrary.test(depRequireName)) {
+    // Split the require format into parts
+    var requireParts = depRequireName.split('/');
+    // Set the library name to the external name...
+    libraryName = requireParts[0];
+  }
   // So we simply create the global tree, we only get the dependency in the
   // require naming format
   //
