@@ -16,7 +16,7 @@ var ProgressBar = require('progress');
 var lib = require('./famono_lib');
 
 program
-  .version('0.0.3')
+  .version('0.0.10')
   .option('-a, --add <name>', 'Add library')
   .option('-d, --del <name>', 'Remove library')
   .option('-l, --list', 'List of used libraries')
