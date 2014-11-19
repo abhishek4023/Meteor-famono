@@ -16,12 +16,11 @@
 
 var fs = Npm.require('fs');
 var path = Npm.require('path');
-var exec = FamonoBinaryDeps['sync-exec'];
-var lib = FamonoBinaryDeps.famono;
+var exec = Npm.require('sync-exec');
 
 var http = Npm.require('http');
 
-var chokidar = FamonoBinaryDeps.chokidar;
+var chokidar = Npm.require('chokidar');
 
 var red = '\u001b[31m';
 var green = '\u001b[32m';

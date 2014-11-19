@@ -1,13 +1,11 @@
 // Filesystem
-var fs = require('fs');
+var fs = Npm.require('fs');
 // Path
-var path = require('path');
+var path = Npm.require('path');
 // http
-var http = require('http');
+var http = Npm.require('http');
 // Get current path
 var currentPath = path.resolve();
-// Path of this script - Used by creating app from templates
-var scriptPath = path.dirname(require.main.filename);
 // The smart.require - if not found we are not in a famono app...
 var configPath = path.join(currentPath, './lib/smart.require');
 
@@ -124,7 +122,7 @@ var setConfigObject = function(obj) {
   }
 };
 
-module.exports = {
+lib = {
   loadFromJSON: loadFromJSON,
   saveToJSON: saveToJSON,
   getBowerData: getBowerData,
