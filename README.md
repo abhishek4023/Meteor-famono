@@ -7,7 +7,10 @@ In short you can load libraries from `bower`, `github`, `http`, locally from `pa
 
 It currently supports `umd`/`commonjs`/`requirejs`/`amd` libraries.
 
-__You get:__ [famous](https://github.com/Famous/famous) libraries pr. default along with [meteor integration library](https://github.com/raix/library).
+__Default libraries:__
+* [famous](https://github.com/Famous/famous) as `famous`
+* [famous](https://github.com/Famous/polyfills) as `famous.polyfills`
+* [meteor integration library](https://github.com/raix/library) as `library`
 
 It was built to support Famo.us in Meteor (examples below)
 But target has become finegrained reuse of javascript code in general from the web.
