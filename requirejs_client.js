@@ -292,8 +292,26 @@ var _parseDefineArguments = function(name, argsInput) {
   result.f = args.pop();
   
   // Check that we got a function
-  if (typeof result.f !== 'function')
-    throw new Error('Famono: ' + name + ' requires function');
+  if (typeof result.f !== 'function') {
+
+    // #87 - The leaflet case misuses the define by setting define(object);
+    // XXX:
+    // At the moment this is limited to objects - but could this be used more
+    // widely? - we could never export functions this way because the normal
+    // api expects a definition function, not the actual exported function...
+    if (typeof result.f == 'object') {
+
+      // We have been handed the exported object
+      var exported = result.f;
+      // Convert into a proper export function for define
+      result.f = function(require, exports, module) { module.exports = exported; };
+
+    } else {
+
+      // This is unsupported usage of the define api
+      throw new Error('Famono: ' + name + ' requires function or object');
+    }
+  }
   
   // If first argument is string then set it and get on
   if (args[0] === ''+args[0] || args[0] === null) result.name = args.shift();
