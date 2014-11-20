@@ -982,21 +982,29 @@ var watcherListener = function(libraryName, event, folder, stats) {
   fs.writeFileSync(filename, data, 'utf8');
 };
 
+var addedListenerAt = new Date();
+
 var rigWatchListener = function(libraryName) {
   if (watchers[libraryName]) {
     // Add the listner
     watchers[libraryName].on('all', function(event, path, stats) {
-      // Stop other timeouts..
-      if (changedWatchLibraries[libraryName]) clearTimeout(changedWatchLibraries[libraryName]);
-      // Add this event timeout
-      changedWatchLibraries[libraryName] = setTimeout(function() {
-        // Remove ref
-        changedWatchLibraries[libraryName] = null;
-        delete changedWatchLibraries[libraryName];
+      // Dont mind add events just now - Wait 5 sec.
+      if (new Date() - addedListenerAt > 5000 || (event !== 'add' && event !== 'addDir')) {
 
-        // Call the listener
-        watcherListener(libraryName, event, path, stats);
-      }, 500);
+        // console.log('Watch', event, path);
+        // Stop other timeouts..
+        if (changedWatchLibraries[libraryName]) clearTimeout(changedWatchLibraries[libraryName]);
+        // Add this event timeout
+        changedWatchLibraries[libraryName] = setTimeout(function() {
+          // Remove ref
+          changedWatchLibraries[libraryName] = null;
+          delete changedWatchLibraries[libraryName];
+
+          // Call the listener
+          watcherListener(libraryName, event, path, stats);
+        }, 500);
+
+      }
 
     });
   }
@@ -1019,6 +1027,8 @@ var watchFiles = function(config, firstRun) {
       });
       // Add the file
       watchers[key].add(item.path);
+      // Set time for adding
+      addedListenerAt = new Date();
       // Rig listeners
       rigWatchListener(key);
     }
