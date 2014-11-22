@@ -1171,13 +1171,12 @@ sourceFetchers.http = function(done) {
 
 // var ensureCounter = 0;
 /**
- * @method checkGitFolders
+ * @method checkLibrarySource
  * @param {Object} config Configuration to match
  * @param {Object} oldConfig Configuration to check up on
  *
  */
-var checkGitFolders = function(newConfig, oldConfig) {
-  // console.log('inWatcherReload', inWatcherReload, ensureCounter++);
+var checkLibrarySource = function(newConfig, oldConfig) {
   // Create one united config
   var config = objectMerge(oldConfig, newConfig);
   // Iterate over the deps
@@ -1460,7 +1459,7 @@ var ensureDependencies = function(compileStep) {
 
     // console.log('CHECK REPO FOLDER');
     // Make sure the repo is up to date
-    checkGitFolders(newConfig, oldConfig);
+    checkLibrarySource(newConfig, oldConfig);
     // Update the last config
     fs.writeFileSync(configFolder, requireFile, 'utf8');
     // Update the version file
