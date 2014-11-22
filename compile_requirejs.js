@@ -871,27 +871,36 @@ var updateDependencies = function(name, rootPath) {
 
   if (fs.existsSync(bowerJson)) {
     var config = lib.loadFromJSON(bowerJson);
+    // XXX: investigate bower dependencies a bit more. We could warn if any deps
+    // are missing or simply add them (if done automaticly we might want to 
+    // track this)
+
     // Make sure we got something and its not index.js already...
     if (config && config.main && config.main !== 'index.js') {
       // So the main could be string or array - we will convert to array first
-      // XXX: For now we disable the bower main...
       var mainFiles = []; //(config.main === ''+config.main)? [config.main]: config.main;
       if (mainFiles.length) {
 
         var indexDepsLookup = {};
         for (var a = 0; a < mainFiles.length; a++) {
-
-          // XXX: we have to test if a folder is passed and we have to remove the
-          // root part of the reference if root is set... Issue #78
-          // TODO: Fix this or make famono smarter about automatic folder index
-          // generation...
+          var fileName = mainFiles[a];
 
           // We have to check if its a folder if so get all deps recursive...?
+          // XXX: this is a temporary test - we should use fs.stats
+          var isFile = /.js$|.css$/g.test(fileName);
 
-          // Remove any css or js ext, and any ./ at the beginning - its assumed
-          var indexDepName = name + '/' + mainFiles[a].replace(/.js|.css/g, '').replace(/^.\//, '');
-          if (typeof indexDepsLookup[indexDepName] === 'undefined') {
+          if (!isFile) {
+            // XXX: we have to test if a folder is passed and we have to remove the
+            // root part of the reference if root is set... Issue #78
+            // TODO: Fix this or make famono smarter about automatic folder index
+            // generation...
+          } else {
+
+            // Remove any css or js ext, and any ./ at the beginning - its assumed
+            var indexDepName = name + '/' + fileName.replace(/.js|.css/g, '').replace(/^.\//, '');
+            // Add the dep
             indexDepsLookup[indexDepName] = true;
+
           }
 
         }
