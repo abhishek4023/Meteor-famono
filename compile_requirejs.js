@@ -2115,23 +2115,6 @@ var loadGlobalDependenciesRegisters = function(globalDeps, libraries) {
         needleList.pop();
       }
 
-      if (!found && needle == dep.library) {
-        // Instead of an index file we could have the global repeated
-        // eg. InfiniteScrollView.InfiniteScrollView
-        var current = needle + '.' + needle;
-        
-        // If we got the needle then return found
-        if (haystackDot[current]) {
-          found = haystackDot[current].keys[0];
-          if (haystackDot[current].keys.length > 1) {
-            // Add a warning
-            dotResolveWarning[current] = found;
-          }
-          // found = current;
-        }
-
-      }
-
       if (found) {
         // console.log('FOUND:', needle, '->', found);
 
