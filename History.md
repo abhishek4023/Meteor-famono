@@ -1,4 +1,8 @@
 ## vNext
+
+## 0.9.23
+Revert the support for small libraries - this was attempt to fix issue #88 but it was the Simplify source reload that got famono working again.
+
 ## 0.9.22
 Clean up chokidar listeners
 Simplify source reload
