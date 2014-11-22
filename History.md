@@ -1,4 +1,14 @@
 ## vNext
+## 0.9.22
+Clean up chokidar listeners
+Simplify source reload
+Support small libraries without `index.js` eg. InfiniteScrollView pointing at a file `InfiniteScrollView.js`
+
+## 0.9.21
+Added more support for package.js new api
+
+## 0.9.20
+Improve path file watcher
 
 ## 0.9.19
 * Added support for define(object) used by leaflet (issue #87)
