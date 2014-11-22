@@ -975,9 +975,11 @@ var watcherListener = function(libraryName, event, folder, stats) {
     data += '\n';
   }
 
-  // console.log('Watcher reload smart.require');
-  // XXX: should all watchers be removed?
-  watchers[libraryName].close();
+  // Clean up all watchers removing listeners and closing.
+  _.each(watchers, function(watcher) {
+    watcher.removeAllListeners();
+    watcher.close();
+  });
 
 
   // Remove this library from the .config
