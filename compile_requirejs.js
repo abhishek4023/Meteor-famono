@@ -952,7 +952,6 @@ var removeRepoFolder = function(name, keepRepo) {
 // Watcher globals
 var watchers = {};
 var changedWatchLibraries = {};
-var inWatcherReload = false; // If set true it fails on initial load of smart.require
 
 var isWatchSource = function(item) {
   var appFolderExp = new RegExp('^' + process.cwd());
@@ -976,7 +975,6 @@ var watcherListener = function(libraryName, event, folder, stats) {
     data += '\n';
   }
 
-  inWatcherReload = true;
   // console.log('Watcher reload smart.require');
   // Trigger reload?
   fs.writeFileSync(filename, data, 'utf8');
@@ -1169,7 +1167,6 @@ sourceFetchers.http = function(done) {
   Fiber.yield();
 };
 
-// var ensureCounter = 0;
 /**
  * @method checkLibrarySource
  * @param {Object} config Configuration to match
@@ -1199,7 +1196,7 @@ var checkLibrarySource = function(newConfig, oldConfig) {
     var sourceType = '';
     // If this souce maybe reloaded
     // XXX: At the moment its not finegrained into libraries KISS
-    var sourceReloadAllowed = (inWatcherReload)? isWatchSource(item): !isWatchSource(item);
+    var sourceReloadAllowed = isWatchSource(item);
     // console.log('READY CHECK', name, sourceReloadAllowed);
     // If no reload allowed now skip
     if (!sourceReloadAllowed) continue;
@@ -1391,8 +1388,6 @@ var checkLibrarySource = function(newConfig, oldConfig) {
   }
 
   // Reset we just got out of reload
-  // console.log('inWatcherReload set FALSE');
-  inWatcherReload = false;
 };
 
 // This is an important piece of the global dependencies since this converts
