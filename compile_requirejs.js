@@ -976,8 +976,30 @@ var watcherListener = function(libraryName, event, folder, stats) {
   }
 
   // console.log('Watcher reload smart.require');
-  // Trigger reload?
-  fs.writeFileSync(filename, data, 'utf8');
+  // XXX: should all watchers be removed?
+  watchers[libraryName].close();
+
+
+  // Remove this library from the .config
+  try {
+    var config = JSON.parse(data);
+    var oldConfig = {};
+
+    _.each(config, function(settings, name) {
+      if (name !== libraryName)
+        oldConfig[name] = settings;
+    });
+
+    // Store the config without the library triggering a copy?
+    fs.writeFileSync(configFolder, JSON.stringify(oldConfig), 'utf8');
+    
+    // Trigger reload?
+    fs.writeFileSync(filename, data, 'utf8');
+
+  } catch(err) {
+    console.log(green, 'Famono:', normal, 'Could not trigger refresh of local library.');
+  }
+
 };
 
 var addedListenerAt = new Date();
