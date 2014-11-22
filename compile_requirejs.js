@@ -1013,7 +1013,8 @@ var rigWatchListener = function(libraryName) {
 
         // console.log('Watch', event, path);
         // Stop other timeouts..
-        if (changedWatchLibraries[libraryName]) clearTimeout(changedWatchLibraries[libraryName]);
+        if (typeof changedWatchLibraries[libraryName] !== 'undefined')
+          clearTimeout(changedWatchLibraries[libraryName]);
         // Add this event timeout
         changedWatchLibraries[libraryName] = setTimeout(function() {
           // Remove ref
