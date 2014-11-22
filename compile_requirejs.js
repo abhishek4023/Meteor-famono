@@ -987,7 +987,7 @@ var rigWatchListener = function(libraryName) {
     // Add the listner
     watchers[libraryName].on('all', function(event, path, stats) {
       // Dont mind add events just now - Wait 5 sec.
-      if (new Date() - addedListenerAt > 5000 || (event !== 'add' && event !== 'addDir')) {
+      if (new Date() - addedListenerAt > 2000 || (event !== 'add' && event !== 'addDir')) {
 
         // console.log('Watch', event, path);
         // Stop other timeouts..
