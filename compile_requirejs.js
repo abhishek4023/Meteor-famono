@@ -1224,7 +1224,7 @@ var checkLibrarySource = function(newConfig, oldConfig) {
     var sourceReloadAllowed = isWatchSource(item);
     // console.log('READY CHECK', name, sourceReloadAllowed);
     // If no reload allowed now skip
-    if (!sourceReloadAllowed) continue;
+    if (!sourceReloadAllowed && item.path) continue;
 
     // Get the source type
     // Initialize check for source changes
