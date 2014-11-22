@@ -1692,17 +1692,24 @@ var readPackagejs = function(packagejsSource) {
       });
     };
 
+    var onUse = function(f) {
+      f({
+        use: use,
+        imply: use,
+        add_files: addFiles,
+        addFiles: addFiles,
+        versionsFrom: empty,
+        export: empty
+      });
+    };
+
     return {
       describe: empty,
       on_test: empty,
-      on_use: function(f) {
-        f({
-          use: use,
-          imply: use,
-          add_files: addFiles,
-          export: empty
-        });
-      },
+      onTest: empty,
+      on_use: onUse,
+      onUse: onUse,
+      registerBuildPlugin: empty,
       _transitional_registerBuildPlugin: empty
     };
   };
