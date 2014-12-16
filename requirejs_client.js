@@ -61,7 +61,9 @@ Famono.require = function(name, f) {
             var returnedModule = current.f.apply(current.f, deps);
             // XXX: Should we somehow extend the module.exports with objects
             // returned?
-            //if (returnedModule) { _.extend(module.exports, returnedModule ); }
+            if (_.isObject(returnedModule) && !_.isArray(returnedModule)) {
+              _.extend(module.exports, returnedModule );
+            }
           }catch(err) {
             console.warn('Famono: Could not load part of module "' + name + '" define(' + (d+1) + '), Error: ' + err.message, err.stack);
           }
@@ -267,7 +269,12 @@ _defineModule = function(name, deps, f) {
     // Mark this module as loaded
     done(name, f);
     // Check if this is a global?
-    if (name === null) f(Famono.require, {}, { exports: window });
+    if (name === null) {
+      var result = f(Famono.require, {}, { exports: window });
+      // If object is returned then extend the window
+      if (_.isObject(result) && !_.isArray(result))
+        _.extend(window, result);
+    }
   });
 }
 
