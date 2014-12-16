@@ -6,7 +6,8 @@ Package.describe({
 });
 
 // Package.registerBuildPlugin
-Package._transitional_registerBuildPlugin({
+// _transitional_registerBuildPlugin
+Package.registerBuildPlugin({
   name: 'compileRequirejs',
   use: [ 'underscore' ],
   sources: [
@@ -26,15 +27,15 @@ Npm.depends({
   useragent: "2.0.7", // Ment for client specific bundles?
 });
 
-Package.on_use(function(api) {
+Package.onUse(function(api) {
 
-  if (api.versionsFrom) api.versionsFrom('METEOR@0.9.4');
+  api.versionsFrom('1.0');
 
   api.use('webapp', 'server');  // Used for serving files
   api.use('reload', 'client'); // Not sure if we are using this?
   api.use('routepolicy', 'server'); // Not sure if this is used...
 
-  api.add_files([
+  api.addFiles([
     // Just noop server-side api warning if used on server
     'requirejs_server.js',
     // The library lazyloading server
@@ -42,7 +43,7 @@ Package.on_use(function(api) {
   ], 'server');
 
   // This is browser client side require / define api
-  api.add_files('requirejs_client.js', 'client');
+  api.addFiles('requirejs_client.js', 'client');
 
   api.export('Famono');
 });
