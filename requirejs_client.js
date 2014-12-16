@@ -397,7 +397,7 @@ Famono.scope = function(/* name [, deps] , libraryModule */) {
     scopedDefine.amd = true;
 
     // Define the module
-    scope.f(Famono.require, scopedDefine);
+    scope.f.apply(window, Famono.require, scopedDefine);
 
     // If the module have no definitions we cheat at hand it one
     // there could be valid reasons for a module to have no definition.
