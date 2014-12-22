@@ -1,6 +1,24 @@
 # Changelog
 
 ## vCurrent
+## [v0.9.25] (https://github.com/raix/Meteor-famono/tree/v0.9.25)
+#### 22/12/14 by Morten Henriksen
+- set underscore version
+
+- Add change log
+
+- 0.9.25 - Adding isopack support - wip
+
+- fix [#96](https://github.com/raix/Meteor-famono/issues/96)- First step of adding general isopack support
+
+- Revert "Bump to version 0.9.25.2"
+
+- Bump to version 0.9.25.2
+
+- mbr update, remove versions.json
+
+- mbr update versions and fix warnings
+
 ## [v0.9.24-pre.2] (https://github.com/raix/Meteor-famono/tree/v0.9.24-pre.2)
 #### 16/12/14 by Morten Henriksen
 - Bump the repo version
