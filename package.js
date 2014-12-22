@@ -9,7 +9,7 @@ Package.describe({
 // _transitional_registerBuildPlugin
 Package.registerBuildPlugin({
   name: 'compileRequirejs',
-  use: [ 'underscore@>1.0' ],
+  use: [ 'underscore@1.0.2' ],
   sources: [
     'famono_lib.js', /* The old famono npm package */
     'compile_requirejs.js' // The holy grail!!
