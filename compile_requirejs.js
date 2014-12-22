@@ -1523,7 +1523,7 @@ var ensureDependencies = function(compileStep) {
 var listDevPackages = function() {
 
   // We should really break this into an array
-  var devPackageFolders = process.env['PACKAGE_DIRS'].split(';');
+  var devPackageFolders = (process.env['PACKAGE_DIRS']) ? process.env['PACKAGE_DIRS'].split(';') : [];
   var appPackageFolder = path.join(meteorFolder, 'local', 'isopacks');
   var meteorPackageFolder = path.join(homepath, '.meteor', 'packages'); // ~/.meteor/...
 
