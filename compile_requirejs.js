@@ -45,6 +45,8 @@ var appModuleRegistry = {};
 
 // The expected .meteor folder
 var meteorFolder = path.join(process.cwd(), '.meteor');
+// Home
+var homepath = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
 
 // If this folder is not found then exit silently - we could be in a publish
 // XXX: At the moment we have no clue if this is run in meteor publish or
@@ -151,7 +153,7 @@ var installationCheck = function() {
       },
       'famous-polyfills': {
         alias: 'famous.polyfills'
-      }      
+      }
     }, null, '\t');
 
     fs.writeFileSync(filename, defaultDeps, 'utf8');
@@ -363,7 +365,7 @@ var parseArray = function(str) {
     var cp = str[i-1];
     var c = str[i];
     var cn = str[i+1];
-    
+
     // Check previous char
     escape = (cp === '\\') && !lastEscape;
 
@@ -483,7 +485,7 @@ var parseCode = function(currentDep, code, inLibraryCode) {
 
   };
 
-  // This function will return the next couple of chars it'll discard spaces 
+  // This function will return the next couple of chars it'll discard spaces
   var getNextChars = function(index, count) {
     var charList = '';
     var a = 0;
@@ -613,7 +615,7 @@ var parseCode = function(currentDep, code, inLibraryCode) {
 
             // Check for module name
             var isCurrentModule = new RegExp('^' + currentDepName.split('/')[0] + '.');
-            
+
             // Test if found
             if (current.text === currentGlobal.globalName || currentCheck.test(current.text)) {
 
@@ -690,7 +692,7 @@ var parseCode = function(currentDep, code, inLibraryCode) {
             } catch(err) {
               warning('could not parse array "' + current.text + '"');
             }
-            
+
             // Test if app module is already registered
             if (typeof appModuleRegistry[moduleName] == 'undefined') {
 
@@ -729,12 +731,12 @@ var parseCode = function(currentDep, code, inLibraryCode) {
           // do a minor check for operators
           for (var a = 0; a < nextOperator.length; a++)
             if (/:|=|\+|\-|\*|\/|%|\||\&/.test(nextOperator[a])) inRequire = false;
-          if (inRequire) {          
+          if (inRequire) {
             // Resolve the dep name
             var resolveDepName = parserResolveDep(current.text, currentDepPath);
             // Push the dependency
             result.deps.push(resolveDepName);
-            
+
             // Update the source code:
             // First char to overwrite
             var newLength = result.code.length - current.text.length;
@@ -782,7 +784,7 @@ var parseCode = function(currentDep, code, inLibraryCode) {
 
   // If no define is found then wrap the code in a define for consistency
   if (!foundDefine) result.code = 'define(function(require, exports, module) {\n' + result.code + '\n});';
-  
+
   // Wrap in Famono scope Credit goes to @speigg for this idea
   result.code = defineStatement + depsString + ', function(require, define, exports, module) {\n' + result.code + '\n});';
 
@@ -872,7 +874,7 @@ var updateDependencies = function(name, rootPath) {
   if (fs.existsSync(bowerJson)) {
     var config = lib.loadFromJSON(bowerJson);
     // XXX: investigate bower dependencies a bit more. We could warn if any deps
-    // are missing or simply add them (if done automaticly we might want to 
+    // are missing or simply add them (if done automaticly we might want to
     // track this)
 
     // Make sure we got something and its not index.js already...
@@ -924,7 +926,7 @@ var updateDependencies = function(name, rootPath) {
 
         // Write the index.js
         fs.writeFileSync(indexJsPath, indexJs, 'utf8');
-      
+
       }
     }
   }
@@ -1003,7 +1005,7 @@ var watcherListener = function(libraryName, event, folder, stats) {
 
     // Store the config without the library triggering a copy?
     fs.writeFileSync(configFolder, JSON.stringify(oldConfig), 'utf8');
-    
+
     // Trigger reload?
     fs.writeFileSync(filename, data, 'utf8');
 
@@ -1096,12 +1098,12 @@ sourceFetchers.path = function(done) {
   var sourcePath = self.path;
 
   var isFile = fs.statSync(self.source).isFile();
-  
+
   // We have to create the folder then
-  fs.mkdirSync(self.target); 
+  fs.mkdirSync(self.target);
 
   if (isFile) {
-  
+
     console.log(green, 'Famono:', normal, 'Copying file', self.source);
     // XXX: do some error checking...
     try {
@@ -1113,11 +1115,11 @@ sourceFetchers.path = function(done) {
       // Stop and Return the error
       return done('Could not copy the source for "' + self.name + '", Error:' + err.message);
     }
-  
-  } else {  
-  
+
+  } else {
+
     console.log('Copy files from', self.source);
-  
+
     eachFile(self.source, function(file) {
       // Cut out the relative path
       var relativePath = file.folder.substring(self.source.length);
@@ -1136,11 +1138,11 @@ sourceFetchers.path = function(done) {
       } catch(err) {
         // Stop and Return the error
         return done('Could not copy the source for "' + self.name + '", Error:' + err.message);
-      }      
-    });  
+      }
+    });
   }
 
-  removeRepoFolder(self.name, true);  
+  removeRepoFolder(self.name, true);
   // Call when done
   done();
 };
@@ -1149,7 +1151,7 @@ sourceFetchers.path = function(done) {
 sourceFetchers.alias = function(done) {
   var self = this;
   // We have to create the folder then
-  fs.mkdirSync(self.target);  
+  fs.mkdirSync(self.target);
   // Index file
   var indexFile = path.join(self.target, 'index.js');
   // File dep
@@ -1157,7 +1159,7 @@ sourceFetchers.alias = function(done) {
   // Write the alias
   fs.writeFileSync(indexFile, data, 'utf8');
   // Remove but keep the repo
-  removeRepoFolder(self.name, true);  
+  removeRepoFolder(self.name, true);
   // Call when done
   done();
 };
@@ -1181,7 +1183,7 @@ sourceFetchers.http = function(done) {
       fs.mkdirSync(self.target);
 
       // Index file
-      var indexFile = path.join(self.target, 'index.js');              
+      var indexFile = path.join(self.target, 'index.js');
 
       // Write the data
       fs.writeFileSync(indexFile, data, 'utf8');
@@ -1245,7 +1247,7 @@ var checkLibrarySource = function(newConfig, oldConfig) {
 
       // Count changes
       if (hasChanged[val]) changes++;
-      
+
       if (typeof item[val] !== 'undefined') sourceType = val;
     }
 
@@ -1292,7 +1294,7 @@ var checkLibrarySource = function(newConfig, oldConfig) {
           }, [doneLoading]);
 
         } else {
-          console.log(green, 'Famono:', normal, 'remove dep "' + name + '" ' + repoPath);          
+          console.log(green, 'Famono:', normal, 'remove dep "' + name + '" ' + repoPath);
         }
       } else {
         console.log(green, 'Famono:', normal, 'The ' + sourceType + ' for "' + name + '" is up-to-date');
@@ -1519,66 +1521,188 @@ var ensureDependencies = function(compileStep) {
 };
 
 var listDevPackages = function() {
-  var devPackageFolder = process.env['PACKAGE_DIRS'];
+
+  // We should really break this into an array
+  var devPackageFolders = process.env['PACKAGE_DIRS'].split(';');
+  var appPackageFolder = path.join(meteorFolder, 'local', 'isopacks');
+  var meteorPackageFolder = path.join(homepath, '.meteor', 'packages'); // ~/.meteor/...
+
+  var packageFolders = [];
+
+  if (meteorPackageFolder && meteorPackageFolder.length)
+    packageFolders.push(meteorPackageFolder);
+
+  if (appPackageFolder && appPackageFolder.length)
+    packageFolders.push(appPackageFolder);
+
+  devPackageFolders.forEach(function(devPackageFolder) {
+    // If this is a folder then...
+    if (devPackageFolder && devPackageFolder.length)
+      packageFolders.push(devPackageFolder);
+  });
 
   var lookup = {};
-  if (devPackageFolder) {
-    // 1. scan folders in devPackageFolder
-    var folderList = fs.readdirSync(devPackageFolder);
 
-    for (var i = 0; i < folderList.length; i++) {
-      // Filename
-      var fileName = folderList[i];
-      // path name
-      var filePath = path.join(devPackageFolder, fileName);
-      // Get the stats
-      var stats = fs.statSync(filePath);
-      // Check if we got a folder
-      if (stats.isDirectory()) {
+  packageFolders.forEach(function(folder) {
 
-        var packageJsPath = path.join(filePath, 'package.js');
+    // console.log('-->', folder);
 
-        // 2. if no name set name to folder name
-        var name = fileName;
-        
-        if (fs.existsSync(packageJsPath)) {
-          // 3. load package.js and check Package.description({ name });
-          var packageJS = fs.readFileSync(packageJsPath, 'utf8');
+    if (fs.existsSync(folder)) {
 
-          // XXX: not the best parser but it have to do for now...
-          var startDescription = packageJS.indexOf('Package.describe');
-          packageJS = packageJS.substring(startDescription);
-          var start = packageJS.indexOf('{');
-          var stop = packageJS.indexOf('}');
+      var list = fs.readdirSync(folder);
 
-          var describeString = packageJS.substring(start+1, stop);
+      // 1. scan folders in folder
+      list.forEach(function(fileName) {
 
-          describeString = describeString.replace(/ /g, '');
-          describeString = describeString.replace(/"|'/g, '');
 
-          describeString = describeString.replace(/\n/g, '');
+        // path name
+        var filePath = path.join(folder, fileName);
+        // Get the stats
+        var stats = fs.statSync(filePath);
+        // Check if we got a folder
+        if (stats.isDirectory()) {
 
-          describeList = describeString.split(',');
+          // console.log(filePath);
 
-          for (var a = 0; a < describeList.length; a++) {
-            var item = describeList[a];
+          // console.log(filePath);
+          //////////////////////////////////////////////////////////////////////
+          // Support package.js
+          //////////////////////////////////////////////////////////////////////
+          var packageJsPath = path.join(filePath, 'package.js');
+          var unipackagePath = path.join(filePath, 'unipackage.json');
+          var isopackPath = path.join(filePath, 'isopack.json');
 
-            if (/^name/.test(item)) {
-              name = item.substring(5);
+
+          // 2. if no name set name to folder name
+          var name = fileName;
+
+
+          if (!fs.existsSync(packageJsPath) && !fs.existsSync(unipackagePath) && !fs.existsSync(isopackPath)) {
+            // Okay fessor... Nothing??
+
+            // Let assume that we are in the ~/.meteor/packages folder
+            // this contains multiple versions of the package...
+            // So we could start doing all kind of fancy stuff - but we just
+            // want the correct package name for now...
+
+            // Bugger - lets iterate over the folders until we get a folder
+            // with an isopack and update the isopackpack
+
+            var versions = fs.readdirSync(filePath);
+
+            var foundIsoPack = false;
+            versions.forEach(function(versionFolder) {
+              if (!foundIsoPack) {
+
+                var vpack = path.join(filePath, versionFolder, 'isopack.json');
+
+                if (fs.existsSync(vpack))
+                  isopackPath = vpack;
+
+                foundIsoPack = true;
+              }
+            });
+          }
+
+
+
+          if (fs.existsSync(packageJsPath)) {
+            // 3. load package.js and check Package.description({ name });
+            var packageJS = fs.readFileSync(packageJsPath, 'utf8');
+
+            // XXX: not the best parser but it have to do for now...
+            var startDescription = packageJS.indexOf('Package.describe');
+            packageJS = packageJS.substring(startDescription);
+            var start = packageJS.indexOf('{');
+            var stop = packageJS.indexOf('}');
+
+            var describeString = packageJS.substring(start+1, stop);
+
+            describeString = describeString.replace(/ /g, '');
+            describeString = describeString.replace(/"|'/g, '');
+
+            describeString = describeString.replace(/\n/g, '');
+
+            describeList = describeString.split(',');
+
+            for (var a = 0; a < describeList.length; a++) {
+              var item = describeList[a];
+
+              if (/^name/.test(item)) {
+                name = item.substring(5);
+                // console.log('---> package.js', name);
+              }
+            }
+
+            // 4. set lookup name to complete folder name
+            lookup[name] = filePath;
+
+          } // EO Reading package js
+
+          //////////////////////////////////////////////////////////////////////
+          // Support unipackage.json
+          //////////////////////////////////////////////////////////////////////
+
+          if (fs.existsSync(unipackagePath)) {
+            try {
+
+              var unipackage = JSON.parse(fs.readFileSync(unipackagePath, 'utf8'));
+
+              if (unipackage.name && unipackage.name.length) {
+
+                name = unipackage.name;
+                // console.log('---> unipackage.json', name);
+
+                // 4. set lookup name to complete folder name
+                lookup[name] = filePath;
+
+              }
+            }catch(err) {
+              // Dont mind this should never happen - and we cant do anything
+              // about it...
             }
           }
 
-          // 4. set lookup name to complete folder name
-          lookup[name] = filePath;
+          //////////////////////////////////////////////////////////////////////
+          // Support isopack.json
+          //////////////////////////////////////////////////////////////////////
+
+          if (fs.existsSync(isopackPath)) {
+            try {
+
+              var isopackage = JSON.parse(fs.readFileSync(isopackPath, 'utf8'));
+
+              _.each(isopackage, function(isopack, version) {
+
+                if (isopack.name && isopack.name.length) {
+
+                  name = isopack.name;
+                  // console.log('---> isopack.json', name);
+
+                  // 4. set lookup name to complete folder name
+                  lookup[name] = filePath;
+
+                }
+
+              });
+
+            }catch(err) {
+              // Dont mind this should never happen - and we cant do anything
+              // about it...
+            }
+          }
+
+
+          //////////////////////////////////////////////////////////////////////
+
 
         }
 
-
-      }
+      });
     }
+  });
 
-
-  }
+  // console.log(lookup);
 
   // Return lookup
   return lookup;
@@ -1657,7 +1781,7 @@ var eachPackage = function(appDir, callback) {
               'Warning, could not find location of package "' + line + '"');
 
           }
-        }       
+        }
       }
     }
   }
@@ -1755,6 +1879,7 @@ var dependentPackageFiles = function(appDir) {
 
     // First check if it's a compiled unipackage
     var unipackagejson = path.join(packag.folder, 'unipackage.json');
+    var isopackagejson = path.join(packag.folder, 'isopack.json');
 
     if (fs.existsSync(unipackagejson)) {
       var unipackage = JSON.parse(fs.readFileSync(unipackagejson, 'utf8'));
@@ -1766,8 +1891,8 @@ var dependentPackageFiles = function(appDir) {
       }
 
       _.each(unipackage.unibuilds, function(build) {
-        var buildpath 
-        var buildjson = JSON.parse( 
+        var buildpath
+        var buildjson = JSON.parse(
           fs.readFileSync(path.join(packag.folder, build.path), 'utf8')
         );
 
@@ -1785,6 +1910,19 @@ var dependentPackageFiles = function(appDir) {
         });
       });
 
+    } else if (fs.existsSync(isopackagejson)) {
+
+      // XXX: TODO implement support for this package format
+      console.warn(yellow, 'Famono:', normal, 'The isopack format is not yet supported!');
+
+
+      // var isopack = fs.fileReadSync(isopackagejson, 'utf8');
+
+      // Work it...
+
+
+
+
 
     } else {
       // unipackage.json doesn't exist, interpret as local package
@@ -1796,24 +1934,28 @@ var dependentPackageFiles = function(appDir) {
       // Read the package.js file.
       packagejs = fs.readFileSync(packagejs, 'utf8');
 
-      try {
-        var results = readPackagejs(packagejs);
+      if (/raix:famono@/.test(packagejs)) {
 
-        // Make sure the package depends on famono.
-        if (results.useFamono) {
+        try {
+          var results = readPackagejs(packagejs);
 
-          // Return all the package's client files.
-          results.clientFiles.forEach(function(relativeClientFile) {
-            var folder = packag.folder + '/' + relativeClientFile;
-            folder = path.dirname(folder);
-            var file = relativeClientFile.substring(relativeClientFile.lastIndexOf('/') + 1);
+          // Make sure the package depends on famono.
+          if (results.useFamono) {
 
-            dependentClientFiles.push(fileProperties(folder, file));
-          });
+            // Return all the package's client files.
+            results.clientFiles.forEach(function(relativeClientFile) {
+              var folder = packag.folder + '/' + relativeClientFile;
+              folder = path.dirname(folder);
+              var file = relativeClientFile.substring(relativeClientFile.lastIndexOf('/') + 1);
+
+              dependentClientFiles.push(fileProperties(folder, file));
+            });
+          }
+        } catch (e) {
+          console.error(red, 'Famono:', normal, 'problem reading package.js for "' + packag.name + '" package.', e);
         }
-      } catch (e) {
-        console.error(red, 'Famono:', normal, 'problem reading package.js for "' + packag.name + '" package.', e);
-      } 
+
+      }
     }
 
   });
@@ -2070,7 +2212,7 @@ var loadGlobalDependenciesRegisters = function(globalDeps, libraries) {
       }
       // Hmmm, okay so now we got the needle = dep.dependency and the
       // haystack = library
-      
+
       // So the fastest strategy for solving this problem would be to split into
       // a list then join using slash and keep popping an item retrying until
       // nothings left - if so then throw a warning...
@@ -2218,7 +2360,7 @@ var comleteTextify = function(obj, level, pretty) {
         result += comleteTextify(val[i], level+1, pretty) + ((i == val.length-1) ? '':',');
       }
       // Add pretty indent
-      if (pretty) result += prettyIndent(level);      
+      if (pretty) result += prettyIndent(level);
       result += ']';
     } else if (typeof val === 'object') {
       // Got an object
@@ -2227,7 +2369,7 @@ var comleteTextify = function(obj, level, pretty) {
       if (pretty) result += '\n';
       result += comleteTextify(val, level+1, pretty);
       // Add pretty indent
-      if (pretty) result += prettyIndent(level);      
+      if (pretty) result += prettyIndent(level);
       result += '}';
     } else {
       throw new Error('Error parsing type');
@@ -2494,7 +2636,7 @@ Plugin.registerSourceHandler("require", function(compileStep) {
   // Add the library javascript
   for (var i = 0; i < loadDepsList.length; i++) {
     var dep = loadDepsList[i];
-    
+
     // Remove the trailing /index
     dep.name = dep.name.replace(/\/index$/, '');
 
@@ -2556,7 +2698,7 @@ Plugin.registerSourceHandler("require", function(compileStep) {
             // The user is clearly doing something wrong.
             data: '// This file was autogenerated by Famono\nFamono.scope(\'' + dep.name + '\', [], function(require, define, exports, module) {\n  define(function() { \n    console.warn(\'Famono: Warning, could not find "' + dep.name + '"\');\n  });\n});',
             bare: true
-          });          
+          });
         }
 
       }
