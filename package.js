@@ -1,6 +1,6 @@
 Package.describe({
   name: 'raix:famono',
-  version: '0.9.24-pre.2',
+  version: '0.9.25',
   summary: 'Library bundler supports use of libraries like Famous, via git/bower and requireJS/commonJS/AMD/UMD',
   git: 'https://github.com/raix/Meteor-famono.git'
 });
@@ -18,7 +18,7 @@ Package.registerBuildPlugin({
     'sync-exec': '0.3.2', // exec sync - we could also just run in a fiber?
     // My sweet non binary chokidar :)
     'chokidar': 'https://github.com/raix/chokidar/tarball/53bdc584bcabb8a132be7292026c95888554aca4' // For watching local files.. 0.8.2
-  }  
+  }
 });
 
 /* included binaries */
