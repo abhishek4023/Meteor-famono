@@ -9,7 +9,7 @@ Package.describe({
 // _transitional_registerBuildPlugin
 Package.registerBuildPlugin({
   name: 'compileRequirejs',
-  use: [ 'underscore@1.0.2' ],
+  use: [ 'underscore' ],
   sources: [
     'famono_lib.js', /* The old famono npm package */
     'compile_requirejs.js' // The holy grail!!
@@ -32,7 +32,7 @@ Package.onUse(function(api) {
   api.versionsFrom('1.0');
 
   api.use('webapp', 'server');  // Used for serving files
-  api.use('reload', 'client'); // Not sure if we are using this?
+  api.use(['reload', 'underscore'], 'client'); // Not sure if we are using this?
   api.use('routepolicy', 'server'); // Not sure if this is used...
 
   api.addFiles([
