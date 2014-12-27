@@ -1,6 +1,16 @@
 # Changelog
 
 ## vCurrent
+## [master] (https://github.com/raix/Meteor-famono/tree/master)
+#### 27/12/14 by Morten Henriksen
+- fix underscore deps
+
+- Add support for the isopack
+
+## [v0.9.26] (https://github.com/raix/Meteor-famono/tree/v0.9.26)
+#### 22/12/14 by Morten Henriksen
+- fixed split bug #96
+
 ## [v0.9.25] (https://github.com/raix/Meteor-famono/tree/v0.9.25)
 #### 22/12/14 by Morten Henriksen
 - set underscore version
