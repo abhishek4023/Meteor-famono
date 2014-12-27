@@ -1,6 +1,6 @@
 Package.describe({
   name: 'raix:famono',
-  version: '0.9.26',
+  version: '0.9.27',
   summary: 'Library bundler supports use of libraries like Famous, via git/bower and requireJS/commonJS/AMD/UMD',
   git: 'https://github.com/raix/Meteor-famono.git'
 });
