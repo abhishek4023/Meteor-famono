@@ -45,6 +45,8 @@ var appModuleRegistry = {};
 
 // The expected .meteor folder
 var meteorFolder = path.join(process.cwd(), '.meteor');
+// The versions file
+var meteorVersions = path.join(meteorFolder, 'versions');
 // Home
 var homepath = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
 
@@ -1708,6 +1710,11 @@ var listDevPackages = function() {
   return lookup;
 };
 
+// XXX: TODO - We should iterate through the .meteor/versions file much faster
+// We should not use the packages file
+// We should store the version
+// We should resolve the path for isopack version folders
+//
 // Iterate through the packages used by the application
 // that are defined in the .meteor/packages file.
 // Essentially project.getPackages https://github.com/meteor/meteor/blob/64e02f2f56d1588d9daad09634d579eb61bf91ab/tools/project.js#L41
@@ -1735,7 +1742,7 @@ var eachPackage = function(appDir, callback) {
     }
   }
 
-  var raw = fs.readFileSync(file, 'utf8');
+  var raw = fs.readFileSync(versionsFile, 'utf8'); // org. the file
   var lines = raw.split(/\r*\n\r*/);
 
   for (var i = 0; i < lines.length; i++) {
@@ -1870,18 +1877,48 @@ var readPackagejs = function(packagejsSource) {
   return reader(PackageApi, NpmApi);
 };
 
+var readPackageVersion = function(packageName) {
+  if (fs.existsSync(meteorVersions)) {
+    // Read the versions file
+    var versions = fs.readFileSync(meteorVersions, 'utf8');
+    // Set default version to null
+    var version = null;
+
+    // Iterate over the versions
+    versions.split('\n').forEach(function(item) {
+      // lines are like: package@1.0.0
+      var part = item.split('@');
+      // If the package is found then set the version
+      if (part[0] == packageName) version = part[1];
+    });
+
+    // Return version of the package
+    return version;
+  } else {
+    // Take a guess??
+    // XXX: Not sure if this would ever be the case
+    return null;
+  }
+};
+
 // Return all the files from packages that depend on famono.
 var dependentPackageFiles = function(appDir) {
   var dependentClientFiles = [];
 
   eachPackage(appDir, function(packag) {
+    // Skip famono itself
     if (packag.name === 'famono' || packag.name === 'raix:famono') return;
 
-    // First check if it's a compiled unipackage
+    // We support the following package descriptors, some are local and others
+    // oldschool to be deprecated
     var unipackagejson = path.join(packag.folder, 'unipackage.json');
-    var isopackagejson = path.join(packag.folder, 'isopack.json');
+    var packagejs = path.join(packag.folder, 'package.js');
 
+    ////////////////////////////////////////////////////////////////////////////
+    // unipackage.json
+    ////////////////////////////////////////////////////////////////////////////
     if (fs.existsSync(unipackagejson)) {
+
       var unipackage = JSON.parse(fs.readFileSync(unipackagejson, 'utf8'));
       if (unipackage.format !== 'unipackage-pre2') {
         console.warn(yellow, 'Famono:', normal,
@@ -1902,35 +1939,20 @@ var dependentPackageFiles = function(appDir) {
 
         _.each(buildjson.resources, function(res) {
           if (res.type !== 'prelink') return;
-          var folder = packag.folder + '/' + res.file;
-          folder = path.dirname(folder);
-          var file = res.file.substring(res.file.lastIndexOf('/') + 1);
+
+          var filePath = path.join(packag.folder, res.file);
+
+          var folder = path.dirname(filePath);
+          var file = path.basename(filePath);
 
           dependentClientFiles.push(fileProperties(folder, file));
         });
       });
 
-    } else if (fs.existsSync(isopackagejson)) {
-
-      // XXX: TODO implement support for this package format
-      console.warn(yellow, 'Famono:', normal, 'The isopack format is not yet supported!');
-
-
-      // var isopack = fs.fileReadSync(isopackagejson, 'utf8');
-
-      // Work it...
-
-
-
-
-
-    } else {
-      // unipackage.json doesn't exist, interpret as local package
-      var packagejs = path.join(packag.folder, 'package.js');
-
-      // Ignore folders that are missing a package.js.
-      if (!fs.existsSync(packagejs)) return;
-
+    ////////////////////////////////////////////////////////////////////////////
+    // package.js format
+    ////////////////////////////////////////////////////////////////////////////
+    } else if (fs.existsSync(packagejs)) {
       // Read the package.js file.
       packagejs = fs.readFileSync(packagejs, 'utf8');
 
@@ -1956,6 +1978,96 @@ var dependentPackageFiles = function(appDir) {
         }
 
       }
+
+    } else {
+
+      // Check if we can read the package version
+      var version = readPackageVersion(packag.name);
+      // Check if version folder exists
+      var found = (version)? fs.existsSync(path.join(packag.folder, version)): false;
+
+      //////////////////////////////////////////////////////////////////////////
+      // isopack.json
+      //////////////////////////////////////////////////////////////////////////
+      if (found) {
+
+        // So to make things harder the we have to look up a package called
+        // .version.??+ +os+web.
+        // Set the packagePath default
+        var packagePath = null;
+        // Rig the test
+        var isPackage = new RegExp('^.' + version + '.');
+        // Read the folder
+        fs.readdirSync(packag.folder).forEach(function(folder) {
+          if (isPackage.test(folder)) packagePath = folder;
+        });
+
+        if (packagePath) {
+          // Finally we try to read the package data
+          var isopackagejson = path.join(packag.folder, packagePath, 'isopack.json');
+
+          if (fs.existsSync(isopackagejson)) {
+            // Read the isopack file and get the files to parse...
+            var isopackRaw = fs.readFileSync(isopackagejson, 'utf8');
+            try{
+              // Parse the file
+              var isopack = JSON.parse(isopackRaw);
+
+              if (isopack['isopack-1']) {
+                // Are we there yet?
+                var builds = isopack['isopack-1'].builds;
+                var browserBuild = '';
+                builds.forEach(function(build) {
+                  if (build.arch == 'web.browser') browserBuild = build.path;
+                });
+
+                var buildConfig = JSON.parse(fs.readFileSync(path.join(packag.folder, packagePath, browserBuild), 'utf8'));
+
+                var dependsOnFamono = false;
+                buildConfig.uses.forEach(function(dep) {
+                  if (dep.package == 'raix:famono') dependsOnFamono = true;
+                });
+
+                if (dependsOnFamono) {
+
+                  buildConfig.resources.forEach(function(res) {
+                    if (res.type !== 'prelink') return;
+
+                    var filePath = path.join(packag.folder, packagePath, res.file);
+                    var folder = path.dirname(filePath);
+                    var file = path.basename(filePath);
+
+                    dependentClientFiles.push(fileProperties(folder, file));
+                  });
+                } else {
+                  return;
+                }
+
+              } else {
+                console.warn(yellow, 'Famono:', normal, 'unknown version of isopack.json for "' + packag.name + '@' + version);
+              }
+
+            }catch(err) {
+              console.warn(yellow, 'Famono:', normal, 'cant parse isopack.json for "' + packag.name + '@' + version, 'Error:', err.message);
+            }
+
+          } else {
+            console.warn(yellow, 'Famono:', normal, 'cant read isopack.json for "' + packag.name + '@' + version);
+          }
+
+
+        } else {
+          // No package path found, eh?
+          console.warn(yellow, 'Famono:', normal, 'cant read package for "' + packag.name + '" package version', version);
+        }
+
+      //////////////////////////////////////////////////////////////////////////
+      // Else its not a package?
+      //////////////////////////////////////////////////////////////////////////
+      } else {
+        console.warn(yellow, 'Famono:', normal, 'cant read package descriptor for "' + packag.name + '" package');
+      }
+
     }
 
   });
